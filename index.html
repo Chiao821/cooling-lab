@@ -3,218 +3,553 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>冷卻室與回本所｜反衝動實驗室</title>
+  <title>EVIDENCE ROOM // 衝動消費物證封存室</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #111216;
-      --card: #1b1d24;
-      --card-2: #242731;
-      --text: #f3f4f6;
-      --muted: #9ca3af;
-      --accent: #f59e0b;
-      --accent-soft: rgba(245, 158, 11, 0.14);
-      --danger: #ef4444;
-      --success: #10b981;
-      --border: rgba(255, 255, 255, 0.08);
+      --bg: #0c0d0f;
+      --surface: #141619;
+      --surface-2: #1c1f24;
+      --manila: #dfd3be;
+      --manila-dark: #c5b69c;
+      --ink: #161616;
+      --text: #e8e6e1;
+      --muted: #8b8d93;
+      --hazard: #eab308;
+      --stamp-red: #dc2626;
+      --ok-green: #16a34a;
+      --border: rgba(255, 255, 255, 0.1);
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Noto Sans TC', -apple-system, sans-serif;
     }
+
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
-      background: var(--bg);
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(rgba(255,255,255,0.04) 1px, transparent 0),
+        linear-gradient(to bottom, #0c0d0f, #111317);
+      background-size: 20px 20px, 100% 100%;
       color: var(--text);
-      line-height: 1.5;
-      padding: 16px 14px 80px;
+      font-family: var(--sans);
+      line-height: 1.55;
+      padding: 0 0 96px;
     }
-    .wrap { max-width: 640px; margin: 0 auto; }
-    h1 { font-size: 1.35rem; margin: 0 0 4px; }
-    .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 14px; }
-    .topbar {
-      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;
-      background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px;
+
+    /* 頂部黃黑警戒封條 */
+    .hazard-strip {
+      height: 10px;
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--hazard),
+        var(--hazard) 10px,
+        #111 10px,
+        #111 20px
+      );
+    }
+
+    .wrap { max-width: 600px; margin: 0 auto; padding: 18px 16px; }
+
+    /* 檔案室頂部標頭 */
+    .header-box {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px;
+      position: relative;
       margin-bottom: 14px;
     }
-    .stat-pill { font-size: 0.82rem; background: var(--card-2); padding: 6px 10px; border-radius: 999px; }
-    .stat-pill b { color: var(--accent); }
-    .promo-banner {
-      background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(239,68,68,0.12));
-      border: 1px solid rgba(245,158,11,0.35);
-      border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; font-size: 0.88rem;
+    .header-box::before {
+      content: "DEPT. OF IMPULSE CONTROL // TOP SECRET";
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      color: var(--hazard);
+      display: block;
+      margin-bottom: 6px;
     }
-    .tabs {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px;
+    .header-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 10px;
     }
-    .tab-btn {
-      background: var(--card); color: var(--muted); border: 1px solid var(--border);
-      border-radius: 10px; padding: 9px 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+    h1 {
+      margin: 0;
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
     }
-    .tab-btn.active { background: var(--accent); color: #111; border-color: var(--accent); }
+    .case-serial {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+    }
+
+    /* 數據儀表板 */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border);
+    }
+    .metric-cell {
+      background: var(--surface-2);
+      padding: 8px 10px;
+      border-left: 3px solid var(--hazard);
+    }
+    .metric-cell.red { border-left-color: var(--stamp-red); }
+    .metric-cell.green { border-left-color: var(--ok-green); }
+    .metric-label { font-size: 0.72rem; color: var(--muted); display: block; }
+    .metric-val { font-family: var(--mono); font-size: 1.05rem; font-weight: 700; }
+
+    /* 促銷線報條 */
+    .intel-bar {
+      background: rgba(234, 179, 8, 0.08);
+      border: 1px solid rgba(234, 179, 8, 0.35);
+      padding: 10px 12px;
+      font-size: 0.84rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .intel-tag {
+      font-family: var(--mono);
+      background: var(--hazard);
+      color: #111;
+      font-weight: 700;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
     .panel { display: none; }
     .panel.active { display: block; }
-    .card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-      padding: 14px; margin-bottom: 12px;
+
+    /* 牛皮紙檔案夾表單 */
+    .dossier {
+      background: var(--manila);
+      color: var(--ink);
+      padding: 18px 16px;
+      position: relative;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+      border-top: 4px solid #8c7a5b;
     }
-    .card h3 { margin: 0 0 10px; font-size: 1rem; }
-    label { display: block; font-size: 0.82rem; color: var(--muted); margin: 8px 0 4px; }
-    input, select {
-      width: 100%; padding: 10px 12px; border-radius: 10px;
-      border: 1px solid var(--border); background: var(--card-2); color: var(--text); font-size: 0.95rem;
+    .dossier-tab {
+      position: absolute;
+      top: -22px;
+      left: 0;
+      background: var(--manila);
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 8px;
     }
-    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .check-item {
-      display: flex; align-items: center; gap: 8px; margin: 8px 0; font-size: 0.88rem; cursor: pointer;
+    .dossier h3 {
+      margin: 0 0 12px;
+      font-size: 1.02rem;
+      font-weight: 900;
+      border-bottom: 2px solid rgba(22,22,22,0.2);
+      padding-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
     }
-    .check-item input { width: auto; }
-    .btn {
-      width: 100%; margin-top: 12px; padding: 11px 14px; border-radius: 10px;
-      border: none; font-weight: 700; font-size: 0.92rem; cursor: pointer;
+    .dossier label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin: 10px 0 4px;
+      color: #3a352d;
     }
-    .btn-primary { background: var(--accent); color: #111; }
-    .btn-ghost { background: var(--card-2); color: var(--text); border: 1px solid var(--border); margin-top: 6px; width: auto; padding: 6px 10px; font-size: 0.8rem; }
-    .btn-danger { background: rgba(239,68,68,0.18); color: #fca5a5; border: 1px solid rgba(239,68,68,0.35); }
-    .btn-ok { background: rgba(16,185,129,0.2); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.4); }
-    .diag-box {
-      margin-top: 12px; padding: 12px; border-radius: 12px;
-      background: var(--accent-soft); border: 1px dashed rgba(245,158,11,0.5); font-size: 0.88rem;
+    .dossier input, .dossier select, .dossier textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid #9e8f76;
+      color: var(--ink);
+      padding: 9px 10px;
+      font-size: 0.92rem;
+      font-family: var(--sans);
+      border-radius: 2px;
     }
-    .compare-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-    .compare-links a {
-      text-decoration: none; font-size: 0.78rem; padding: 5px 9px; border-radius: 8px;
-      background: var(--card-2); color: var(--text); border: 1px solid var(--border);
+    .dossier textarea { min-height: 74px; resize: vertical; }
+    .dossier input:focus, .dossier textarea:focus, .dossier select:focus {
+      outline: 2px solid var(--ink);
+      background: #fff;
     }
-    .item-card {
-      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-      padding: 13px; margin-bottom: 10px;
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      margin: 6px 0;
+      cursor: pointer;
+      font-weight: 500;
     }
-    .item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-    .badge {
-      font-size: 0.75rem; padding: 3px 8px; border-radius: 999px;
-      background: var(--card-2); color: var(--accent); white-space: nowrap;
+    .check-row input { width: 16px; height: 16px; accent-color: var(--ink); }
+
+    .btn-seal {
+      width: 100%;
+      margin-top: 14px;
+      background: var(--ink);
+      color: var(--hazard);
+      border: none;
+      padding: 12px;
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      cursor: pointer;
     }
-    .muted { color: var(--muted); font-size: 0.83rem; }
-    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .actions button { margin-top: 0; width: auto; flex: 1; min-width: 90px; padding: 8px 10px; font-size: 0.82rem; }
-    .tomb { border-style: dashed; opacity: 0.9; }
-    .hall { border-color: rgba(16,185,129,0.45); }
-    canvas { width: 100%; border-radius: 12px; background: #14161c; margin-top: 10px; display: none; }
-    .pro-note {
-      font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: 16px;
+    .btn-seal:active { transform: translateY(1px); }
+
+    /* AI 審訊室區塊 */
+    .ai-box {
+      margin-top: 14px;
+      background: #18191c;
+      color: var(--text);
+      padding: 12px;
+      border-left: 4px solid var(--stamp-red);
+      font-size: 0.85rem;
+    }
+    .ai-box-head {
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      color: #f87171;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .ai-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .btn-mini {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 6px 10px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-mini.highlight {
+      background: var(--hazard);
+      color: #111;
+      border-color: var(--hazard);
+      font-weight: 700;
+    }
+
+    /* 物證封存袋卡片 */
+    .evidence-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+    .tape-banner {
+      background: repeating-linear-gradient(
+        -45deg,
+        rgba(234, 179, 8, 0.9),
+        rgba(234, 179, 8, 0.9) 8px,
+        #18181b 8px,
+        #18181b 16px
+      );
+      color: #fff;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      text-shadow: 0 1px 2px #000;
+      display: flex;
+      justify-content: space-between;
+    }
+    .ev-body { padding: 14px; }
+    .ev-meta {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .ev-title { font-size: 1.08rem; font-weight: 700; margin: 0 0 4px; }
+    .ev-price { font-family: var(--mono); color: var(--hazard); font-weight: 700; }
+    .ev-confession {
+      margin: 8px 0;
+      padding: 8px 10px;
+      background: rgba(255,255,255,0.03);
+      border-left: 2px solid var(--muted);
+      font-size: 0.82rem;
+      color: #d1d5db;
+    }
+    .compare-strip { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+    .compare-strip a {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      background: var(--surface-2);
+    }
+    .ev-btns { display: grid; grid-template-columns: 1fr 1fr auto; gap: 6px; margin-top: 10px; }
+    .ev-btns button {
+      padding: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-family: var(--sans);
+    }
+    .btn-void { background: rgba(22, 163, 74, 0.16); color: #86efac; border-color: rgba(22, 163, 74, 0.4) !important; }
+    .btn-acquire { background: var(--surface-2); color: var(--text); }
+    .btn-trash { background: transparent; color: var(--muted); padding: 8px 10px !important; }
+
+    /* 結案印章風格 */
+    .closed-card {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      padding: 13px 14px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .stamp {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      border: 2px solid var(--stamp-red);
+      color: var(--stamp-red);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      transform: rotate(-8deg);
+      opacity: 0.85;
+    }
+    .stamp.gold { border-color: var(--hazard); color: var(--hazard); }
+
+    /* 底部懸浮檔案導覽列 */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(14, 15, 18, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      max-width: 600px;
+      margin: 0 auto;
+      z-index: 50;
+    }
+    .nav-item {
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 11px 4px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-top: 2px solid transparent;
+    }
+    .nav-item span { display: block; font-family: var(--mono); font-size: 0.65rem; opacity: 0.7; }
+    .nav-item.active {
+      color: var(--hazard);
+      border-top-color: var(--hazard);
+      background: rgba(234, 179, 8, 0.06);
+    }
+
+    canvas { width: 100%; border: 1px solid var(--border); margin-top: 12px; display: none; }
+    details.api-drawer {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    details.api-drawer input {
+      margin-top: 6px;
+      background: #111;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 8px;
+      width: 100%;
+      font-family: var(--mono);
     }
   </style>
 </head>
 <body>
+<div class="hazard-strip"></div>
+
 <div class="wrap">
-  <h1>🧊 冷卻室與回本所</h1>
-  <div class="sub">先冷靜、等特價、算回本——別讓深夜大腦替錢包作主</div>
-
-  <div class="topbar">
-    <div class="stat-pill">已守住省下：<b id="savedTotal">$0</b></div>
-    <div class="stat-pill">墓碑數：<b id="tombCount">0</b></div>
-    <div class="stat-pill">真香回本：<b id="hallCount">0</b></div>
+  <div class="header-box">
+    <div class="header-title">
+      <h1>衝動消費物證封存室</h1>
+      <span class="case-serial">FILE #821-B</span>
+    </div>
+    <div class="metrics">
+      <div class="metric-cell green">
+        <span class="metric-label">攔截金額</span>
+        <span class="metric-val" id="savedTotal">$0</span>
+      </div>
+      <div class="metric-cell red">
+        <span class="metric-label">作廢物證</span>
+        <span class="metric-val" id="tombCount">0</span>
+      </div>
+      <div class="metric-cell">
+        <span class="metric-label">回本結案</span>
+        <span class="metric-val" id="hallCount">0</span>
+      </div>
+    </div>
   </div>
 
-  <div class="promo-banner" id="promoBanner">載入大促雷達中...</div>
-
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('cool', this)">冷卻室</button>
-    <button class="tab-btn" onclick="switchTab('repay', this)">回本算</button>
-    <button class="tab-btn" onclick="switchTab('grave', this)">墓園/殿堂</button>
-    <button class="tab-btn" onclick="switchTab('report', this)">戰報圖</button>
+  <div class="intel-bar" id="promoBanner">
+    <span class="intel-tag">INTEL</span>
+    <span>線報載入中...</span>
   </div>
 
-  <!-- 1. 冷卻室 -->
+  <!-- 分頁 1：封存室 -->
   <div id="panel-cool" class="panel active">
-    <div class="card">
-      <h3>新增「想買但先忍一下」的東西</h3>
-      <label>商品名稱</label>
-      <input id="cName" placeholder="例如：降噪耳機 / 限量公仔" />
+    <div class="dossier" style="margin-top: 22px;">
+      <div class="dossier-tab">NEW EVIDENCE // 建檔</div>
+      <h3>
+        <span>扣押可疑購物衝動</span>
+        <span style="font-family:var(--mono); font-size:0.78rem;">FORM-01</span>
+      </h3>
 
-      <div class="row-2">
+      <label>目標物品名稱</label>
+      <input id="cName" placeholder="例：限定版耳機 / 某個一直滑到的周邊" />
+
+      <div class="grid-2">
         <div>
-          <label>價格（NT$）</label>
-          <input id="cPrice" type="number" min="1" placeholder="1800" />
+          <label>標價（NT$）</label>
+          <input id="cPrice" type="number" min="1" placeholder="2400" />
         </div>
         <div>
-          <label>冷卻時數</label>
+          <label>強制隔離時間</label>
           <select id="cHours">
-            <option value="24">24 小時（微衝動）</option>
-            <option value="72" selected>72 小時（標準封印）</option>
-            <option value="168">7 天（高單價冷靜）</option>
+            <option value="24">24 HR（輕度觀察）</option>
+            <option value="72" selected>72 HR（標準封存）</option>
+            <option value="168">7 DAYS（高危隔離）</option>
           </select>
         </div>
       </div>
 
-      <label>買前靈魂拷問（勾選符合的狀況）</label>
-      <label class="check-item"><input type="checkbox" id="qNight" /> 現在是深夜 11 點後或心情很差的時候</label>
-      <label class="check-item"><input type="checkbox" id="qDup" /> 家裡其實已經有類似功能的東西</label>
-      <label class="check-item"><input type="checkbox" id="qSocial" /> 有一半原因是為了拍照發限動／跟風</label>
+      <label>快速風險勾選</label>
+      <label class="check-row"><input type="checkbox" id="qNight" /> 深夜 11 點後或情緒低落／壓力大</label>
+      <label class="check-row"><input type="checkbox" id="qDup" /> 手邊已有功能重疊的替代品</label>
+      <label class="check-row"><input type="checkbox" id="qSocial" /> 受演算法推播、限量飢餓行銷影響</label>
 
-      <button class="btn btn-primary" onclick="addCooling()">診斷並封印進冷卻室</button>
-      <div id="diagResult" class="diag-box" style="display:none;"></div>
+      <label>嫌犯自白書（自由填寫：你為什麼覺得非買不可？不買會怎樣？）</label>
+      <textarea id="cConfession" placeholder="老實交代，例如：最近工作很累想犒賞自己、怕錯過這次特價就沒了、其實也不知道買來放哪..."></textarea>
+
+      <button class="btn-seal" onclick="sealEvidence()">[ 貼上封條並生成 AI 審訊卷宗 ]</button>
+
+      <!-- AI 分析與一鍵轉送區 -->
+      <div id="aiPanel" class="ai-box" style="display:none;">
+        <div class="ai-box-head">
+          <span>INTERROGATION REPORT // 審訊卷宗已建立</span>
+          <span id="riskBadge">RISK: --%</span>
+        </div>
+        <div id="localVerdict"></div>
+
+        <div class="ai-actions">
+          <button class="btn-mini highlight" onclick="copyAiPrompt()">📋 複製完整自白給 AI 毒舌分析</button>
+          <a class="btn-mini" href="https://gemini.google.com/app" target="_blank" rel="noopener">開啟 Gemini 貼上 ↗</a>
+          <a class="btn-mini" href="https://chatgpt.com/" target="_blank" rel="noopener">開啟 ChatGPT 貼上 ↗</a>
+        </div>
+
+        <details class="api-drawer">
+          <summary>進階設定：填入自己的 Gemini API Key（可直接在此頁呼叫 AI）</summary>
+          <input id="geminiKey" type="password" placeholder="貼上 AIzaSy... 金鑰（僅存於你的瀏覽器本機）" onchange="saveApiKey(this.value)" />
+          <button class="btn-mini" style="margin-top:6px;" onclick="runDirectGemini()">⚡ 直接在這裡執行 AI 偵訊</button>
+          <div id="aiLiveReply" style="margin-top:8px; white-space:pre-wrap; color:#fde68a;"></div>
+        </details>
+      </div>
     </div>
 
     <div id="coolList"></div>
   </div>
 
-  <!-- 2. 回本計算機 -->
+  <!-- 分頁 2：回本追蹤 -->
   <div id="panel-repay" class="panel">
-    <div class="card">
-      <h3>新增「已經買了、來算回本」的東西</h3>
+    <div class="dossier" style="margin-top: 22px;">
+      <div class="dossier-tab">ASSET AUDIT // 折舊核銷</div>
+      <h3>
+        <span>已拆封物品使用率稽核</span>
+        <span style="font-family:var(--mono); font-size:0.78rem;">FORM-02</span>
+      </h3>
       <label>物品名稱</label>
-      <input id="rName" placeholder="例如：人體工學椅 / 咖啡機" />
-      <div class="row-2">
+      <input id="rName" placeholder="例：機械鍵盤 / 拍立得" />
+      <div class="grid-2">
         <div>
-          <label>入手價格（NT$）</label>
-          <input id="rPrice" type="number" min="1" placeholder="4500" />
+          <label>入手成本（NT$）</label>
+          <input id="rPrice" type="number" min="1" placeholder="3200" />
         </div>
         <div>
           <label>已使用次數</label>
           <input id="rUses" type="number" min="1" value="1" />
         </div>
       </div>
-      <label>目標單次成本低於幾元算「回本」？（NT$）</label>
+      <label>單次攤提低於幾元算「回本結案」？（NT$）</label>
       <input id="rTarget" type="number" min="1" value="50" />
-      <button class="btn btn-primary" onclick="addRepay()">加入回本追蹤</button>
+      <button class="btn-seal" onclick="addRepay()">[ 登錄資產並開始稽核 ]</button>
     </div>
 
     <div id="repayList"></div>
   </div>
 
-  <!-- 3. 慾望墓園 & 真香殿堂 -->
+  <!-- 分頁 3：檔案庫 -->
   <div id="panel-grave" class="panel">
-    <div class="card">
-      <h3>🪦 慾望墓園（冷卻後決定不買）</h3>
-      <div id="graveList"><div class="muted">目前還沒有墓碑，忍住一筆消費就會立一塊！</div></div>
+    <div class="header-box">
+      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--stamp-red); margin-bottom:8px;">ARCHIVE // 已作廢物證（理智攔截成功）</div>
+      <div id="graveList"><div style="color:var(--muted); font-size:0.85rem;">尚無作廢物證。成功忍住不買的項目會蓋章歸檔於此。</div></div>
     </div>
-    <div class="card">
-      <h3>✨ 真香殿堂（成功回本的戰利品）</h3>
-      <div id="hallList"><div class="muted">目前還沒有回本物品，去回本算幫物品按「+1 次」吧。</div></div>
+    <div class="header-box">
+      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--hazard); margin-bottom:8px;">HALL OF VALUE // 回本結案清單</div>
+      <div id="hallList"><div style="color:var(--muted); font-size:0.85rem;">尚無結案資產。去「使用稽核」累積使用次數吧。</div></div>
     </div>
   </div>
 
-  <!-- 4. 一鍵戰報圖 -->
+  <!-- 分頁 4：機密戰報 -->
   <div id="panel-report" class="panel">
-    <div class="card">
-      <h3>📸 生成限動戰報圖</h3>
-      <div class="muted">把你的克制成果轉成圖片，方便直接存起來發限動。</div>
-      <button class="btn btn-primary" onclick="drawReport()">產生戰報圖片</button>
+    <div class="header-box">
+      <div style="font-family:var(--mono); font-size:0.75rem; color:var(--hazard); margin-bottom:6px;">EXPORT // 機密結案報告圖</div>
+      <p style="font-size:0.85rem; color:var(--muted); margin:0 0 12px;">生成檔案室風格的戰績報告圖片，可直接存手機發限動或 Threads。</p>
+      <button class="btn-seal" style="margin-top:0;" onclick="drawReport()">[ 列印機密戰報圖 ]</button>
       <canvas id="reportCanvas" width="720" height="1080"></canvas>
-      <button class="btn btn-ghost" id="dlBtn" style="display:none; width:100%; margin-top:10px;" onclick="downloadCanvas()">下載戰報圖片</button>
+      <button class="btn-mini highlight" id="dlBtn" style="display:none; width:100%; margin-top:10px; text-align:center; padding:10px;" onclick="downloadCanvas()">下載 PNG 報告圖</button>
     </div>
-  </div>
-
-  <div class="pro-note">
-    初版 Demo（資料存於本機瀏覽器 localStorage）｜未來可擴充：自訂換算單位、多組夢想基金、進階主題與序號解鎖
   </div>
 </div>
 
+<!-- 底部檔案櫃導覽列 -->
+<nav class="bottom-nav">
+  <button class="nav-item active" onclick="switchTab('cool', this)"><span>CASE-01</span>物證封存</button>
+  <button class="nav-item" onclick="switchTab('repay', this)"><span>CASE-02</span>使用稽核</button>
+  <button class="nav-item" onclick="switchTab('grave', this)"><span>ARCHIVE</span>結案檔案</button>
+  <button class="nav-item" onclick="switchTab('report', this)"><span>REPORT</span>列印戰報</button>
+</nav>
+
 <script>
-const STORAGE_KEY = 'anti_impulse_mvp_v1';
+const STORAGE_KEY = 'evidence_room_v2';
+const KEY_STORAGE = 'evidence_gemini_key';
 const state = loadState();
+let lastPromptText = '';
 
 function defaultState() {
-  return { cooling: [], repay: [], grave: [], hall: [], savedTotal: 0 };
+  return { cooling: [], repay: [], grave: [], hall: [], savedTotal: 0, seq: 1 };
 }
 function loadState() {
   try {
@@ -227,11 +562,22 @@ function saveState() {
   renderAll();
 }
 
+function saveApiKey(val) {
+  localStorage.setItem(KEY_STORAGE, val.trim());
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const savedKey = localStorage.getItem(KEY_STORAGE);
+  if (savedKey) document.getElementById('geminiKey').value = savedKey;
+  renderAll();
+});
+
 function switchTab(name, btn) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function getNextPromo() {
@@ -240,68 +586,117 @@ function getNextPromo() {
   const promos = [
     { name: '雙12 歲末狂歡', date: new Date(y, 11, 12) },
     { name: '聖誕 / 跨年檔期', date: new Date(y, 11, 25) },
-    { name: '年貨大街 / 過年檔期', date: new Date(y + 1, 0, 25) },
+    { name: '年貨 / 農曆春節檔', date: new Date(y + 1, 0, 25) },
+    { name: '38 女王節', date: new Date(y + 1, 2, 8) },
     { name: '618 年中慶', date: new Date(y + 1, 5, 18) },
     { name: '雙11 購物節', date: new Date(y + 1, 10, 11) },
     { name: '雙12 歲末狂歡', date: new Date(y + 1, 11, 12) }
   ];
-  const todayMidnight = new Date(y, now.getMonth(), now.getDate());
+  const today = new Date(y, now.getMonth(), now.getDate());
   for (const p of promos) {
-    const diffDays = Math.ceil((p.date - todayMidnight) / 86400000);
-    if (diffDays >= 0) return { name: p.name, days: diffDays };
+    const diff = Math.ceil((p.date - today) / 86400000);
+    if (diff >= 0) return { name: p.name, days: diff };
   }
-  return { name: '下波大促', days: 14 };
+  return { name: '下波月促（18/25號）', days: 10 };
 }
 
 function painText(price) {
-  const chicken = (price / 90).toFixed(1);
-  const coffee = Math.round(price / 55);
-  return `約等於 ${chicken} 份雞排 或 ${coffee} 杯大冰美`;
+  const chicken = (price / 95).toFixed(1);
+  const workHrs = (price / 190).toFixed(1);
+  return `痛感換算：約 ${chicken} 份雞排 ／ 需工作 ${workHrs} 小時（以時薪 190 計）`;
 }
 
 function compareLinksHtml(keyword) {
   const q = encodeURIComponent(keyword.trim());
   return `
-    <div class="compare-links">
-      <a target="_blank" rel="noopener" href="https://shopee.tw/search?keyword=${q}">搜蝦皮</a>
-      <a target="_blank" rel="noopener" href="https://m.momoshop.com.tw/search.momo?searchKeyword=${q}">搜 Momo</a>
-      <a target="_blank" rel="noopener" href="https://24h.pchome.com.tw/search/?q=${q}">搜 PChome</a>
-      <a target="_blank" rel="noopener" href="https://biggo.com.tw/s/${q}/">BigGo 比價</a>
+    <div class="compare-strip">
+      <a target="_blank" rel="noopener" href="https://shopee.tw/search?keyword=${q}">[蝦皮比價]</a>
+      <a target="_blank" rel="noopener" href="https://m.momoshop.com.tw/search.momo?searchKeyword=${q}">[Momo]</a>
+      <a target="_blank" rel="noopener" href="https://24h.pchome.com.tw/search/?q=${q}">[PChome]</a>
+      <a target="_blank" rel="noopener" href="https://biggo.com.tw/s/${q}/">[BigGo 歷史價]</a>
     </div>
   `;
 }
 
-function addCooling() {
+function sealEvidence() {
   const name = document.getElementById('cName').value.trim();
   const price = Number(document.getElementById('cPrice').value);
   let hours = Number(document.getElementById('cHours').value);
-  if (!name || !price || price <= 0) return alert('請先輸入商品名稱和合理價格！');
+  const confession = document.getElementById('cConfession').value.trim();
 
-  let score = 25;
-  if (document.getElementById('qNight').checked) score += 25;
-  if (document.getElementById('qDup').checked) score += 25;
-  if (document.getElementById('qSocial').checked) score += 25;
-  if (score >= 75) hours = Math.max(hours, 72);
+  if (!name || !price || price <= 0) return alert('請填寫目標物品與正確標價！');
+
+  const flags = [];
+  let score = 20;
+  if (document.getElementById('qNight').checked) { score += 25; flags.push('深夜/情緒波動期'); }
+  if (document.getElementById('qDup').checked) { score += 25; flags.push('家中有替代品'); }
+  if (document.getElementById('qSocial').checked) { score += 20; flags.push('演算法/限量刺激'); }
+  if (confession.length > 0 && confession.length < 15) { score += 10; }
+  score = Math.min(99, score);
+  if (score >= 70) hours = Math.max(hours, 72);
 
   const promo = getNextPromo();
-  const comment = score >= 75
-    ? `衝動指數 ${score}%！這波很像腦波弱，建議直接封印 ${hours} 小時，或是撐到「${promo.name}」（還有 ${promo.days} 天）再看。`
-    : `衝動指數 ${score}%。先冷靜 ${hours} 小時看看還想不想買，距離「${promo.name}」還有 ${promo.days} 天。`;
+  const caseNo = 'EV-' + String(state.seq++).padStart(3, '0');
 
-  const diagEl = document.getElementById('diagResult');
-  diagEl.style.display = 'block';
-  diagEl.innerHTML = `<b>📋 敗家診斷：</b>${comment}<br><span class="muted">${painText(price)}</span>`;
+  lastPromptText = `你現在是「衝動消費物證封存室」的冷酷偵訊官，語氣自然、犀利帶點台灣口語吐槽，不要說教或列一大堆條列式建議。請根據以下嫌犯的自白書，拆穿他想買這東西的心理盲點，並給出一個「該忍住還是等特價」的判決：
+- 目標物品：${name}
+- 價格：NT$ ${price}（${painText(price)}）
+- 風險標籤：${flags.length ? flags.join('、') : '無明顯標籤'}
+- 嫌犯自白書：「${confession || '（嫌犯保持緘默，沒寫理由）'}」
+- 距離下次電商大促（${promo.name}）：還有 ${promo.days} 天`;
+
+  document.getElementById('aiPanel').style.display = 'block';
+  document.getElementById('riskBadge').textContent = `RISK: ${score}%`;
+  document.getElementById('localVerdict').innerHTML = `
+    <div><b>初步卷宗判定：</b>衝動風險 <b>${score}%</b>，已強制封存 <b>${hours} 小時</b>。</div>
+    <div style="color:#9ca3af; font-size:0.8rem; margin-top:4px;">${painText(price)}。距離「${promo.name}」還有 ${promo.days} 天。</div>
+  `;
+  document.getElementById('aiLiveReply').textContent = '';
 
   state.cooling.unshift({
     id: Date.now(),
+    caseNo,
     name,
     price,
     score,
+    confession,
     unlockAt: Date.now() + hours * 3600 * 1000
   });
+
   document.getElementById('cName').value = '';
   document.getElementById('cPrice').value = '';
+  document.getElementById('cConfession').value = '';
   saveState();
+}
+
+function copyAiPrompt() {
+  if (!lastPromptText) return;
+  navigator.clipboard.writeText(lastPromptText).then(() => {
+    alert('已複製完整審訊卷宗！直接貼給 Gemini 或 ChatGPT 就能看它怎麼吐槽你。');
+  }).catch(() => {
+    prompt('請手動全選複製以下文字貼給 AI：', lastPromptText);
+  });
+}
+
+async function runDirectGemini() {
+  const key = document.getElementById('geminiKey').value.trim();
+  const replyEl = document.getElementById('aiLiveReply');
+  if (!key) return alert('請先貼上你的 Gemini API Key！');
+  if (!lastPromptText) return alert('請先建立一筆物證封存！');
+
+  replyEl.textContent = '偵訊官正在調閱卷宗分析中...';
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(key)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: [{ parts: [{ text: lastPromptText }] }] })
+    });
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    replyEl.textContent = text || ('分析失敗：' + (data?.error?.message || '請檢查金鑰是否正確'));
+  } catch (err) {
+    replyEl.textContent = '連線失敗：' + err.message;
+  }
 }
 
 function decideCooling(id, action) {
@@ -316,6 +711,7 @@ function decideCooling(id, action) {
   } else if (action === 'buy') {
     state.repay.unshift({
       id: Date.now(),
+      caseNo: item.caseNo,
       name: item.name,
       price: item.price,
       uses: 1,
@@ -330,9 +726,10 @@ function addRepay() {
   const price = Number(document.getElementById('rPrice').value);
   const uses = Math.max(1, Number(document.getElementById('rUses').value) || 1);
   const target = Math.max(1, Number(document.getElementById('rTarget').value) || 50);
-  if (!name || !price || price <= 0) return alert('請輸入物品名稱與價格！');
+  if (!name || !price || price <= 0) return alert('請填寫物品名稱與入手成本！');
 
-  state.repay.unshift({ id: Date.now(), name, price, uses, target });
+  const caseNo = 'AS-' + String(state.seq++).padStart(3, '0');
+  state.repay.unshift({ id: Date.now(), caseNo, name, price, uses, target });
   document.getElementById('rName').value = '';
   document.getElementById('rPrice').value = '';
   saveState();
@@ -355,11 +752,11 @@ function delRepay(id) {
 }
 
 function formatLeft(ms) {
-  if (ms <= 0) return '冷卻完成！可以決定了';
+  if (ms <= 0) return 'SEAL EXPIRED // 封存期滿';
   const totalMin = Math.floor(ms / 60000);
   const h = Math.floor(totalMin / 60);
   const m = totalMin % 60;
-  return `剩餘 ${h} 小時 ${m} 分`;
+  return `LOCKED ${h}H ${m}M`;
 }
 
 function renderAll() {
@@ -369,25 +766,31 @@ function renderAll() {
 
   const promo = getNextPromo();
   document.getElementById('promoBanner').innerHTML =
-    `🎯 <b>促銷雷達：</b>距離「<b>${promo.name}</b>」還有 <b>${promo.days}</b> 天，非急用不妨先觀望一下。`;
+    `<span class="intel-tag">INTEL</span><span>距離下波促銷「<b>${promo.name}</b>」剩 <b>${promo.days} 天</b>，封條未到期前嚴禁原價結帳。</span>`;
 
   const coolEl = document.getElementById('coolList');
   coolEl.innerHTML = state.cooling.map(item => {
     const left = item.unlockAt - Date.now();
     return `
-      <div class="item-card">
-        <div class="item-top">
-          <div>
-            <b>${escapeHtml(item.name)}</b> <span class="muted">NT$ ${item.price.toLocaleString()}</span>
-            <div class="muted">${painText(item.price)}</div>
-          </div>
-          <span class="badge">${formatLeft(left)}</span>
+      <div class="evidence-card">
+        <div class="tape-banner">
+          <span>DO NOT BUY // EVIDENCE SEALED</span>
+          <span>${formatLeft(left)}</span>
         </div>
-        ${compareLinksHtml(item.name)}
-        <div class="actions">
-          <button class="btn btn-ok" onclick="decideCooling(${item.id}, 'skip')">忍住不買（+省錢）</button>
-          <button class="btn btn-ghost" onclick="decideCooling(${item.id}, 'buy')">還是買了（轉回本）</button>
-          <button class="btn btn-danger" onclick="decideCooling(${item.id}, 'del')">移除</button>
+        <div class="ev-body">
+          <div class="ev-meta">
+            <span>${item.caseNo || 'EV-001'} · RISK ${item.score}%</span>
+            <span class="ev-price">NT$ ${item.price.toLocaleString()}</span>
+          </div>
+          <div class="ev-title">${escapeHtml(item.name)}</div>
+          <div style="font-size:0.78rem; color:var(--muted);">${painText(item.price)}</div>
+          ${item.confession ? `<div class="ev-confession">「${escapeHtml(item.confession)}」</div>` : ''}
+          ${compareLinksHtml(item.name)}
+          <div class="ev-btns">
+            <button class="btn-void" onclick="decideCooling(${item.id}, 'skip')">蓋章作廢（不買）</button>
+            <button class="btn-acquire" onclick="decideCooling(${item.id}, 'buy')">仍要入手（轉稽核）</button>
+            <button class="btn-trash" onclick="decideCooling(${item.id}, 'del')">✕</button>
+          </div>
         </div>
       </div>
     `;
@@ -398,17 +801,20 @@ function renderAll() {
     const cost = Math.round(item.price / item.uses);
     const done = cost <= item.target;
     return `
-      <div class="item-card ${done ? 'hall' : ''}">
-        <div class="item-top">
-          <div>
-            <b>${escapeHtml(item.name)}</b> <span class="muted">NT$ ${item.price.toLocaleString()}</span>
-            <div class="muted">已用 <b>${item.uses}</b> 次｜單次成本約 <b>NT$ ${cost}</b>（目標 ≤ $${item.target}）</div>
+      <div class="evidence-card">
+        <div class="ev-body">
+          <div class="ev-meta">
+            <span>${item.caseNo || 'AS-001'} · 已使用 ${item.uses} 次</span>
+            <span class="ev-price">單次 NT$ ${cost}</span>
           </div>
-          <span class="badge">${done ? '✨ 已回本' : '努力回本中'}</span>
-        </div>
-        <div class="actions">
-          <button class="btn btn-primary" onclick="incUse(${item.id})">+1 次使用</button>
-          <button class="btn btn-danger" onclick="delRepay(${item.id})">刪除</button>
+          <div class="ev-title">${escapeHtml(item.name)} <span style="font-size:0.8rem; color:var(--muted);">(原價 $${item.price.toLocaleString()})</span></div>
+          <div style="font-size:0.78rem; color:${done ? '#86efac' : 'var(--muted)'};">
+            ${done ? '★ 已達標回本門檻（目標 ≤ $' + item.target + '）' : '距離目標單次 $' + item.target + ' 還需繼續使用'}
+          </div>
+          <div class="ev-btns" style="grid-template-columns: 1fr auto; margin-top:10px;">
+            <button class="btn-void" onclick="incUse(${item.id})">+1 次使用紀錄</button>
+            <button class="btn-trash" onclick="delRepay(${item.id})">刪除</button>
+          </div>
         </div>
       </div>
     `;
@@ -417,9 +823,11 @@ function renderAll() {
   const graveEl = document.getElementById('graveList');
   if (state.grave.length) {
     graveEl.innerHTML = state.grave.map(g => `
-      <div class="item-card tomb">
-        <b>🪦 ${escapeHtml(g.name)}</b> <span class="muted">省下 NT$ ${g.price.toLocaleString()}</span>
-        <div class="muted">立碑日期：${g.endedAt}｜死於理智</div>
+      <div class="closed-card">
+        <span class="stamp">VOID // 作廢</span>
+        <div style="font-family:var(--mono); font-size:0.72rem; color:var(--muted);">${g.caseNo || 'EV'} · ${g.endedAt}</div>
+        <div style="font-weight:700; margin:2px 0;">${escapeHtml(g.name)}</div>
+        <div style="font-size:0.8rem; color:#86efac;">成功攔截支出：NT$ ${g.price.toLocaleString()}</div>
       </div>
     `).join('');
   }
@@ -427,9 +835,11 @@ function renderAll() {
   const hallEl = document.getElementById('hallList');
   if (state.hall.length) {
     hallEl.innerHTML = state.hall.map(h => `
-      <div class="item-card hall">
-        <b>✨ ${escapeHtml(h.name)}</b> <span class="muted">單次成本已降至 NT$ ${h.finalCost}</span>
-        <div class="muted">總計使用 ${h.uses} 次，真香認證！</div>
+      <div class="closed-card">
+        <span class="stamp gold">PAID OFF</span>
+        <div style="font-family:var(--mono); font-size:0.72rem; color:var(--muted);">${h.caseNo || 'AS'} · 使用 ${h.uses} 次</div>
+        <div style="font-weight:700; margin:2px 0;">${escapeHtml(h.name)}</div>
+        <div style="font-size:0.8rem; color:var(--hazard);">單次成本降至 NT$ ${h.finalCost}，物盡其用</div>
       </div>
     `).join('');
   }
@@ -438,41 +848,70 @@ function renderAll() {
 function drawReport() {
   const canvas = document.getElementById('reportCanvas');
   const ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#14161c';
+  ctx.fillStyle = '#0c0d0f';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(36, 36, canvas.width - 72, canvas.height - 72);
+  // 頂部與底部警戒條
+  ctx.fillStyle = '#eab308';
+  ctx.fillRect(40, 40, canvas.width - 80, 14);
+  ctx.fillRect(40, canvas.height - 54, canvas.width - 80, 14);
 
-  ctx.fillStyle = '#f59e0b';
-  ctx.font = 'bold 44px sans-serif';
-  ctx.fillText('反衝動戰報', 76, 130);
+  ctx.strokeStyle = 'rgba(255,255,255,0.16)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+  ctx.fillStyle = '#eab308';
+  ctx.font = 'bold 22px monospace';
+  ctx.fillText('DEPT. OF IMPULSE CONTROL // CASE SUMMARY', 72, 105);
+
+  ctx.fillStyle = '#e8e6e1';
+  ctx.font = 'bold 46px sans-serif';
+  ctx.fillText('物證封存室結案報告', 72, 165);
+
+  // 牛皮紙數據框
+  ctx.fillStyle = '#dfd3be';
+  ctx.fillRect(72, 215, canvas.width - 144, 240);
+
+  ctx.fillStyle = '#3a352d';
+  ctx.font = 'bold 24px sans-serif';
+  ctx.fillText('累計成功攔截衝動金額', 102, 270);
+
+  ctx.fillStyle = '#161616';
+  ctx.font = 'bold 78px monospace';
+  ctx.fillText('NT$ ' + state.savedTotal.toLocaleString(), 102, 365);
+
+  ctx.fillStyle = '#57534e';
+  ctx.font = '22px monospace';
+  ctx.fillText('STATUS: RATIONALITY PREVAILED', 102, 420);
+
+  // 紅色印章框
+  ctx.save();
+  ctx.translate(540, 560);
+  ctx.rotate(-0.14);
+  ctx.strokeStyle = '#dc2626';
+  ctx.lineWidth = 5;
+  ctx.strokeRect(-110, -35, 220, 70);
+  ctx.fillStyle = '#dc2626';
+  ctx.font = 'bold 30px monospace';
+  ctx.fillText('CASE CLOSED', -95, 10);
+  ctx.restore();
+
+  ctx.fillStyle = '#e8e6e1';
+  ctx.font = '28px monospace';
+  ctx.fillText(`[01] 作廢物證件數：${state.grave.length} 件`, 72, 540);
+  ctx.fillText(`[02] 回本結案資產：${state.hall.length} 件`, 72, 600);
+  ctx.fillText(`[03] 封條隔離中　：${state.cooling.length} 件`, 72, 660);
 
   ctx.fillStyle = '#9ca3af';
   ctx.font = '24px sans-serif';
-  ctx.fillText('冷卻室與回本所｜克制紀錄', 76, 175);
+  const verdict = state.savedTotal > 0
+    ? '判決結果：腦波穩固，錢包安全撤離現場。'
+    : '判決結果：物證室剛開張，下次手滑先送進來隔離。';
+  ctx.fillText(verdict, 72, 790);
 
-  ctx.fillStyle = '#f3f4f6';
-  ctx.font = 'bold 34px sans-serif';
-  ctx.fillText('累計守住省下', 76, 300);
-
-  ctx.fillStyle = '#10b981';
-  ctx.font = 'bold 76px sans-serif';
-  ctx.fillText('NT$ ' + state.savedTotal.toLocaleString(), 76, 395);
-
-  ctx.fillStyle = '#f3f4f6';
-  ctx.font = '28px sans-serif';
-  ctx.fillText(`🪦 慾望墓碑：${state.grave.length} 塊`, 76, 520);
-  ctx.fillText(`✨ 真香回本：${state.hall.length} 件`, 76, 575);
-  ctx.fillText(`🧊 正在冷卻：${state.cooling.length} 件`, 76, 630);
-
-  ctx.fillStyle = '#d1d5db';
-  ctx.font = '24px sans-serif';
-  const line = state.savedTotal > 0
-    ? '今天又把錢留給自己了，穩。'
-    : '還沒立下第一塊墓碑，下次手滑先來冷卻一下。';
-  ctx.fillText(line, 76, 760);
+  ctx.fillStyle = '#6b7280';
+  ctx.font = '20px monospace';
+  ctx.fillText('GENERATED BY EVIDENCE ROOM // ' + new Date().toLocaleDateString('zh-TW'), 72, 960);
 
   canvas.style.display = 'block';
   document.getElementById('dlBtn').style.display = 'block';
@@ -481,7 +920,7 @@ function drawReport() {
 function downloadCanvas() {
   const canvas = document.getElementById('reportCanvas');
   const link = document.createElement('a');
-  link.download = 'anti-impulse-report.png';
+  link.download = 'evidence-report.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
 }
@@ -492,7 +931,6 @@ function escapeHtml(str) {
   }[m]));
 }
 
-renderAll();
 setInterval(renderAll, 30000);
 </script>
 </body>

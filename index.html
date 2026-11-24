@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>冷卻室與回本所｜反衝動實驗室</title>
+  <style>
+    :root {
+      --bg: #111216;
+      --card: #1b1d24;
+      --card-2: #242731;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --accent: #f59e0b;
+      --accent-soft: rgba(245, 158, 11, 0.14);
+      --danger: #ef4444;
+      --success: #10b981;
+      --border: rgba(255, 255, 255, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 16px 14px 80px;
+    }
+    .wrap { max-width: 640px; margin: 0 auto; }
+    h1 { font-size: 1.35rem; margin: 0 0 4px; }
+    .sub { color: var(--muted); font-size: 0.85rem; margin-bottom: 14px; }
+    .topbar {
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between;
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px;
+      margin-bottom: 14px;
+    }
+    .stat-pill { font-size: 0.82rem; background: var(--card-2); padding: 6px 10px; border-radius: 999px; }
+    .stat-pill b { color: var(--accent); }
+    .promo-banner {
+      background: linear-gradient(135deg, rgba(245,158,11,0.18), rgba(239,68,68,0.12));
+      border: 1px solid rgba(245,158,11,0.35);
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 14px; font-size: 0.88rem;
+    }
+    .tabs {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 14px;
+    }
+    .tab-btn {
+      background: var(--card); color: var(--muted); border: 1px solid var(--border);
+      border-radius: 10px; padding: 9px 6px; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+    }
+    .tab-btn.active { background: var(--accent); color: #111; border-color: var(--accent); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 14px; margin-bottom: 12px;
+    }
+    .card h3 { margin: 0 0 10px; font-size: 1rem; }
+    label { display: block; font-size: 0.82rem; color: var(--muted); margin: 8px 0 4px; }
+    input, select {
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--card-2); color: var(--text); font-size: 0.95rem;
+    }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .check-item {
+      display: flex; align-items: center; gap: 8px; margin: 8px 0; font-size: 0.88rem; cursor: pointer;
+    }
+    .check-item input { width: auto; }
+    .btn {
+      width: 100%; margin-top: 12px; padding: 11px 14px; border-radius: 10px;
+      border: none; font-weight: 700; font-size: 0.92rem; cursor: pointer;
+    }
+    .btn-primary { background: var(--accent); color: #111; }
+    .btn-ghost { background: var(--card-2); color: var(--text); border: 1px solid var(--border); margin-top: 6px; width: auto; padding: 6px 10px; font-size: 0.8rem; }
+    .btn-danger { background: rgba(239,68,68,0.18); color: #fca5a5; border: 1px solid rgba(239,68,68,0.35); }
+    .btn-ok { background: rgba(16,185,129,0.2); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.4); }
+    .diag-box {
+      margin-top: 12px; padding: 12px; border-radius: 12px;
+      background: var(--accent-soft); border: 1px dashed rgba(245,158,11,0.5); font-size: 0.88rem;
+    }
+    .compare-links { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .compare-links a {
+      text-decoration: none; font-size: 0.78rem; padding: 5px 9px; border-radius: 8px;
+      background: var(--card-2); color: var(--text); border: 1px solid var(--border);
+    }
+    .item-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 13px; margin-bottom: 10px;
+    }
+    .item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .badge {
+      font-size: 0.75rem; padding: 3px 8px; border-radius: 999px;
+      background: var(--card-2); color: var(--accent); white-space: nowrap;
+    }
+    .muted { color: var(--muted); font-size: 0.83rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .actions button { margin-top: 0; width: auto; flex: 1; min-width: 90px; padding: 8px 10px; font-size: 0.82rem; }
+    .tomb { border-style: dashed; opacity: 0.9; }
+    .hall { border-color: rgba(16,185,129,0.45); }
+    canvas { width: 100%; border-radius: 12px; background: #14161c; margin-top: 10px; display: none; }
+    .pro-note {
+      font-size: 0.78rem; color: var(--muted); text-align: center; margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🧊 冷卻室與回本所</h1>
+  <div class="sub">先冷靜、等特價、算回本——別讓深夜大腦替錢包作主</div>
+
+  <div class="topbar">
+    <div class="stat-pill">已守住省下：<b id="savedTotal">$0</b></div>
+    <div class="stat-pill">墓碑數：<b id="tombCount">0</b></div>
+    <div class="stat-pill">真香回本：<b id="hallCount">0</b></div>
+  </div>
+
+  <div class="promo-banner" id="promoBanner">載入大促雷達中...</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('cool', this)">冷卻室</button>
+    <button class="tab-btn" onclick="switchTab('repay', this)">回本算</button>
+    <button class="tab-btn" onclick="switchTab('grave', this)">墓園/殿堂</button>
+    <button class="tab-btn" onclick="switchTab('report', this)">戰報圖</button>
+  </div>
+
+  <!-- 1. 冷卻室 -->
+  <div id="panel-cool" class="panel active">
+    <div class="card">
+      <h3>新增「想買但先忍一下」的東西</h3>
+      <label>商品名稱</label>
+      <input id="cName" placeholder="例如：降噪耳機 / 限量公仔" />
+
+      <div class="row-2">
+        <div>
+          <label>價格（NT$）</label>
+          <input id="cPrice" type="number" min="1" placeholder="1800" />
+        </div>
+        <div>
+          <label>冷卻時數</label>
+          <select id="cHours">
+            <option value="24">24 小時（微衝動）</option>
+            <option value="72" selected>72 小時（標準封印）</option>
+            <option value="168">7 天（高單價冷靜）</option>
+          </select>
+        </div>
+      </div>
+
+      <label>買前靈魂拷問（勾選符合的狀況）</label>
+      <label class="check-item"><input type="checkbox" id="qNight" /> 現在是深夜 11 點後或心情很差的時候</label>
+      <label class="check-item"><input type="checkbox" id="qDup" /> 家裡其實已經有類似功能的東西</label>
+      <label class="check-item"><input type="checkbox" id="qSocial" /> 有一半原因是為了拍照發限動／跟風</label>
+
+      <button class="btn btn-primary" onclick="addCooling()">診斷並封印進冷卻室</button>
+      <div id="diagResult" class="diag-box" style="display:none;"></div>
+    </div>
+
+    <div id="coolList"></div>
+  </div>
+
+  <!-- 2. 回本計算機 -->
+  <div id="panel-repay" class="panel">
+    <div class="card">
+      <h3>新增「已經買了、來算回本」的東西</h3>
+      <label>物品名稱</label>
+      <input id="rName" placeholder="例如：人體工學椅 / 咖啡機" />
+      <div class="row-2">
+        <div>
+          <label>入手價格（NT$）</label>
+          <input id="rPrice" type="number" min="1" placeholder="4500" />
+        </div>
+        <div>
+          <label>已使用次數</label>
+          <input id="rUses" type="number" min="1" value="1" />
+        </div>
+      </div>
+      <label>目標單次成本低於幾元算「回本」？（NT$）</label>
+      <input id="rTarget" type="number" min="1" value="50" />
+      <button class="btn btn-primary" onclick="addRepay()">加入回本追蹤</button>
+    </div>
+
+    <div id="repayList"></div>
+  </div>
+
+  <!-- 3. 慾望墓園 & 真香殿堂 -->
+  <div id="panel-grave" class="panel">
+    <div class="card">
+      <h3>🪦 慾望墓園（冷卻後決定不買）</h3>
+      <div id="graveList"><div class="muted">目前還沒有墓碑，忍住一筆消費就會立一塊！</div></div>
+    </div>
+    <div class="card">
+      <h3>✨ 真香殿堂（成功回本的戰利品）</h3>
+      <div id="hallList"><div class="muted">目前還沒有回本物品，去回本算幫物品按「+1 次」吧。</div></div>
+    </div>
+  </div>
+
+  <!-- 4. 一鍵戰報圖 -->
+  <div id="panel-report" class="panel">
+    <div class="card">
+      <h3>📸 生成限動戰報圖</h3>
+      <div class="muted">把你的克制成果轉成圖片，方便直接存起來發限動。</div>
+      <button class="btn btn-primary" onclick="drawReport()">產生戰報圖片</button>
+      <canvas id="reportCanvas" width="720" height="1080"></canvas>
+      <button class="btn btn-ghost" id="dlBtn" style="display:none; width:100%; margin-top:10px;" onclick="downloadCanvas()">下載戰報圖片</button>
+    </div>
+  </div>
+
+  <div class="pro-note">
+    初版 Demo（資料存於本機瀏覽器 localStorage）｜未來可擴充：自訂換算單位、多組夢想基金、進階主題與序號解鎖
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'anti_impulse_mvp_v1';
+const state = loadState();
+
+function defaultState() {
+  return { cooling: [], repay: [], grave: [], hall: [], savedTotal: 0 };
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? { ...defaultState(), ...JSON.parse(raw) } : defaultState();
+  } catch { return defaultState(); }
+}
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  renderAll();
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function getNextPromo() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const promos = [
+    { name: '雙12 歲末狂歡', date: new Date(y, 11, 12) },
+    { name: '聖誕 / 跨年檔期', date: new Date(y, 11, 25) },
+    { name: '年貨大街 / 過年檔期', date: new Date(y + 1, 0, 25) },
+    { name: '618 年中慶', date: new Date(y + 1, 5, 18) },
+    { name: '雙11 購物節', date: new Date(y + 1, 10, 11) },
+    { name: '雙12 歲末狂歡', date: new Date(y + 1, 11, 12) }
+  ];
+  const todayMidnight = new Date(y, now.getMonth(), now.getDate());
+  for (const p of promos) {
+    const diffDays = Math.ceil((p.date - todayMidnight) / 86400000);
+    if (diffDays >= 0) return { name: p.name, days: diffDays };
+  }
+  return { name: '下波大促', days: 14 };
+}
+
+function painText(price) {
+  const chicken = (price / 90).toFixed(1);
+  const coffee = Math.round(price / 55);
+  return `約等於 ${chicken} 份雞排 或 ${coffee} 杯大冰美`;
+}
+
+function compareLinksHtml(keyword) {
+  const q = encodeURIComponent(keyword.trim());
+  return `
+    <div class="compare-links">
+      <a target="_blank" rel="noopener" href="https://shopee.tw/search?keyword=${q}">搜蝦皮</a>
+      <a target="_blank" rel="noopener" href="https://m.momoshop.com.tw/search.momo?searchKeyword=${q}">搜 Momo</a>
+      <a target="_blank" rel="noopener" href="https://24h.pchome.com.tw/search/?q=${q}">搜 PChome</a>
+      <a target="_blank" rel="noopener" href="https://biggo.com.tw/s/${q}/">BigGo 比價</a>
+    </div>
+  `;
+}
+
+function addCooling() {
+  const name = document.getElementById('cName').value.trim();
+  const price = Number(document.getElementById('cPrice').value);
+  let hours = Number(document.getElementById('cHours').value);
+  if (!name || !price || price <= 0) return alert('請先輸入商品名稱和合理價格！');
+
+  let score = 25;
+  if (document.getElementById('qNight').checked) score += 25;
+  if (document.getElementById('qDup').checked) score += 25;
+  if (document.getElementById('qSocial').checked) score += 25;
+  if (score >= 75) hours = Math.max(hours, 72);
+
+  const promo = getNextPromo();
+  const comment = score >= 75
+    ? `衝動指數 ${score}%！這波很像腦波弱，建議直接封印 ${hours} 小時，或是撐到「${promo.name}」（還有 ${promo.days} 天）再看。`
+    : `衝動指數 ${score}%。先冷靜 ${hours} 小時看看還想不想買，距離「${promo.name}」還有 ${promo.days} 天。`;
+
+  const diagEl = document.getElementById('diagResult');
+  diagEl.style.display = 'block';
+  diagEl.innerHTML = `<b>📋 敗家診斷：</b>${comment}<br><span class="muted">${painText(price)}</span>`;
+
+  state.cooling.unshift({
+    id: Date.now(),
+    name,
+    price,
+    score,
+    unlockAt: Date.now() + hours * 3600 * 1000
+  });
+  document.getElementById('cName').value = '';
+  document.getElementById('cPrice').value = '';
+  saveState();
+}
+
+function decideCooling(id, action) {
+  const idx = state.cooling.findIndex(x => x.id === id);
+  if (idx === -1) return;
+  const item = state.cooling[idx];
+  state.cooling.splice(idx, 1);
+
+  if (action === 'skip') {
+    state.savedTotal += item.price;
+    state.grave.unshift({ ...item, endedAt: new Date().toLocaleDateString('zh-TW') });
+  } else if (action === 'buy') {
+    state.repay.unshift({
+      id: Date.now(),
+      name: item.name,
+      price: item.price,
+      uses: 1,
+      target: 50
+    });
+  }
+  saveState();
+}
+
+function addRepay() {
+  const name = document.getElementById('rName').value.trim();
+  const price = Number(document.getElementById('rPrice').value);
+  const uses = Math.max(1, Number(document.getElementById('rUses').value) || 1);
+  const target = Math.max(1, Number(document.getElementById('rTarget').value) || 50);
+  if (!name || !price || price <= 0) return alert('請輸入物品名稱與價格！');
+
+  state.repay.unshift({ id: Date.now(), name, price, uses, target });
+  document.getElementById('rName').value = '';
+  document.getElementById('rPrice').value = '';
+  saveState();
+}
+
+function incUse(id) {
+  const item = state.repay.find(x => x.id === id);
+  if (!item) return;
+  item.uses += 1;
+  const cost = item.price / item.uses;
+  if (cost <= item.target && !state.hall.some(h => h.id === item.id)) {
+    state.hall.unshift({ ...item, finalCost: Math.round(cost) });
+  }
+  saveState();
+}
+
+function delRepay(id) {
+  state.repay = state.repay.filter(x => x.id !== id);
+  saveState();
+}
+
+function formatLeft(ms) {
+  if (ms <= 0) return '冷卻完成！可以決定了';
+  const totalMin = Math.floor(ms / 60000);
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  return `剩餘 ${h} 小時 ${m} 分`;
+}
+
+function renderAll() {
+  document.getElementById('savedTotal').textContent = '$' + state.savedTotal.toLocaleString();
+  document.getElementById('tombCount').textContent = state.grave.length;
+  document.getElementById('hallCount').textContent = state.hall.length;
+
+  const promo = getNextPromo();
+  document.getElementById('promoBanner').innerHTML =
+    `🎯 <b>促銷雷達：</b>距離「<b>${promo.name}</b>」還有 <b>${promo.days}</b> 天，非急用不妨先觀望一下。`;
+
+  const coolEl = document.getElementById('coolList');
+  coolEl.innerHTML = state.cooling.map(item => {
+    const left = item.unlockAt - Date.now();
+    return `
+      <div class="item-card">
+        <div class="item-top">
+          <div>
+            <b>${escapeHtml(item.name)}</b> <span class="muted">NT$ ${item.price.toLocaleString()}</span>
+            <div class="muted">${painText(item.price)}</div>
+          </div>
+          <span class="badge">${formatLeft(left)}</span>
+        </div>
+        ${compareLinksHtml(item.name)}
+        <div class="actions">
+          <button class="btn btn-ok" onclick="decideCooling(${item.id}, 'skip')">忍住不買（+省錢）</button>
+          <button class="btn btn-ghost" onclick="decideCooling(${item.id}, 'buy')">還是買了（轉回本）</button>
+          <button class="btn btn-danger" onclick="decideCooling(${item.id}, 'del')">移除</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const repayEl = document.getElementById('repayList');
+  repayEl.innerHTML = state.repay.map(item => {
+    const cost = Math.round(item.price / item.uses);
+    const done = cost <= item.target;
+    return `
+      <div class="item-card ${done ? 'hall' : ''}">
+        <div class="item-top">
+          <div>
+            <b>${escapeHtml(item.name)}</b> <span class="muted">NT$ ${item.price.toLocaleString()}</span>
+            <div class="muted">已用 <b>${item.uses}</b> 次｜單次成本約 <b>NT$ ${cost}</b>（目標 ≤ $${item.target}）</div>
+          </div>
+          <span class="badge">${done ? '✨ 已回本' : '努力回本中'}</span>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="incUse(${item.id})">+1 次使用</button>
+          <button class="btn btn-danger" onclick="delRepay(${item.id})">刪除</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const graveEl = document.getElementById('graveList');
+  if (state.grave.length) {
+    graveEl.innerHTML = state.grave.map(g => `
+      <div class="item-card tomb">
+        <b>🪦 ${escapeHtml(g.name)}</b> <span class="muted">省下 NT$ ${g.price.toLocaleString()}</span>
+        <div class="muted">立碑日期：${g.endedAt}｜死於理智</div>
+      </div>
+    `).join('');
+  }
+
+  const hallEl = document.getElementById('hallList');
+  if (state.hall.length) {
+    hallEl.innerHTML = state.hall.map(h => `
+      <div class="item-card hall">
+        <b>✨ ${escapeHtml(h.name)}</b> <span class="muted">單次成本已降至 NT$ ${h.finalCost}</span>
+        <div class="muted">總計使用 ${h.uses} 次，真香認證！</div>
+      </div>
+    `).join('');
+  }
+}
+
+function drawReport() {
+  const canvas = document.getElementById('reportCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#14161c';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = 'rgba(245, 158, 11, 0.45)';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(36, 36, canvas.width - 72, canvas.height - 72);
+
+  ctx.fillStyle = '#f59e0b';
+  ctx.font = 'bold 44px sans-serif';
+  ctx.fillText('反衝動戰報', 76, 130);
+
+  ctx.fillStyle = '#9ca3af';
+  ctx.font = '24px sans-serif';
+  ctx.fillText('冷卻室與回本所｜克制紀錄', 76, 175);
+
+  ctx.fillStyle = '#f3f4f6';
+  ctx.font = 'bold 34px sans-serif';
+  ctx.fillText('累計守住省下', 76, 300);
+
+  ctx.fillStyle = '#10b981';
+  ctx.font = 'bold 76px sans-serif';
+  ctx.fillText('NT$ ' + state.savedTotal.toLocaleString(), 76, 395);
+
+  ctx.fillStyle = '#f3f4f6';
+  ctx.font = '28px sans-serif';
+  ctx.fillText(`🪦 慾望墓碑：${state.grave.length} 塊`, 76, 520);
+  ctx.fillText(`✨ 真香回本：${state.hall.length} 件`, 76, 575);
+  ctx.fillText(`🧊 正在冷卻：${state.cooling.length} 件`, 76, 630);
+
+  ctx.fillStyle = '#d1d5db';
+  ctx.font = '24px sans-serif';
+  const line = state.savedTotal > 0
+    ? '今天又把錢留給自己了，穩。'
+    : '還沒立下第一塊墓碑，下次手滑先來冷卻一下。';
+  ctx.fillText(line, 76, 760);
+
+  canvas.style.display = 'block';
+  document.getElementById('dlBtn').style.display = 'block';
+}
+
+function downloadCanvas() {
+  const canvas = document.getElementById('reportCanvas');
+  const link = document.createElement('a');
+  link.download = 'anti-impulse-report.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, m => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[m]));
+}
+
+renderAll();
+setInterval(renderAll, 30000);
+</script>
+</body>
+</html>
